@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ESP32 Tank Control</title>
+  <style>
+    body { font-family: Arial; text-align: center; background: #f0f4f8; }
+    h2 { color: #0a3d62; }
+    button { width: 80px; height: 40px; margin: 5px; font-size: 16px; }
+    #stopBtn { background: #eb2f06; color: white; }
+  </style>
+</head>
+<body>
+  <h2>ESP32 Tank Control</h2>
+
+  <div>
+    <button onclick="send('FWD')">Forward</button><br>
+    <button onclick="send('LEFT')">Left</button>
+    <button id="stopBtn" onclick="send('STOP')">Stop</button>
+    <button onclick="send('RIGHT')">Right</button><br>
+    <button onclick="send('BWD')">Backward</button>
+  </div>
+
+  <div>
+    <button onclick="send('FIRE')">Fire</button>
+  </div>
+
+  <div>
+    <label>Speed: <span id="speedVal">150</span></label><br>
+    <input type="range" min="0" max="255" value="150" oninput="updateSpeed(this.value)">
+  </div>
+
+  <script>
+    const ws = new WebSocket("wss://YOUR_RENDER_WS_URL"); // replace with your Render WS URL
+
+    ws.onopen = () => console.log("Connected to WebSocket server");
+    ws.onmessage = (msg) => console.log("Server:", msg.data);
+
+    function send(cmd){
+      ws.send(cmd);
+      console.log("Sent:", cmd);
+    }
+
+    function updateSpeed(val){
+      document.getElementById("speedVal").innerText = val;
+      send('speed=' + val);
+    }
+  </script>
+</body>
+</html>
