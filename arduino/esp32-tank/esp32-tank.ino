@@ -7,7 +7,7 @@ using namespace websockets;
 // ---------------- WiFi & WS ----------------
 const char* ssid = "CG_NET";
 const char* password = "CG@54321";
-const char* ws_server = "wss://YOUR_RENDER_WS_URL"; // Render WS URL
+const char* ws_server = "ws://192.168.100.111:8080"; // Your WS server
 
 WebsocketsClient ws;
 
@@ -22,12 +22,12 @@ Servo fireServo;
 int motorSpeed = 150;
 
 // ---------------- Motor functions ----------------
-void moveForward(){ digitalWrite(IN1,HIGH); digitalWrite(IN2,LOW); digitalWrite(IN3,HIGH); digitalWrite(IN4,LOW); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed);}
-void moveBackward(){ digitalWrite(IN1,LOW); digitalWrite(IN2,HIGH); digitalWrite(IN3,LOW); digitalWrite(IN4,HIGH); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed);}
-void turnLeft(){ digitalWrite(IN1,LOW); digitalWrite(IN2,HIGH); digitalWrite(IN3,HIGH); digitalWrite(IN4,LOW); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed);}
-void turnRight(){ digitalWrite(IN1,HIGH); digitalWrite(IN2,LOW); digitalWrite(IN3,LOW); digitalWrite(IN4,HIGH); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed);}
-void stopMotors(){ digitalWrite(IN1,LOW); digitalWrite(IN2,LOW); digitalWrite(IN3,LOW); digitalWrite(IN4,LOW); analogWrite(ENA,0); analogWrite(ENB,0);}
-void performFire(){ /* Fire servo sweep code */ }
+void moveForward()  { digitalWrite(IN1,HIGH); digitalWrite(IN2,LOW); digitalWrite(IN3,HIGH); digitalWrite(IN4,LOW); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed); }
+void moveBackward() { digitalWrite(IN1,LOW); digitalWrite(IN2,HIGH); digitalWrite(IN3,LOW); digitalWrite(IN4,HIGH); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed); }
+void turnLeft()     { digitalWrite(IN1,LOW); digitalWrite(IN2,HIGH); digitalWrite(IN3,HIGH); digitalWrite(IN4,LOW); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed); }
+void turnRight()    { digitalWrite(IN1,HIGH); digitalWrite(IN2,LOW); digitalWrite(IN3,LOW); digitalWrite(IN4,HIGH); analogWrite(ENA,motorSpeed); analogWrite(ENB,motorSpeed); }
+void stopMotors()   { digitalWrite(IN1,LOW); digitalWrite(IN2,LOW); digitalWrite(IN3,LOW); digitalWrite(IN4,LOW); analogWrite(ENA,0); analogWrite(ENB,0); }
+void performFire()  { fireServo.write(0); delay(500); fireServo.write(90); }
 
 // ---------------- WebSocket message ----------------
 void onMessage(WebsocketsMessage msg){
@@ -46,9 +46,10 @@ void onMessage(WebsocketsMessage msg){
 
 void setup(){
   Serial.begin(115200);
+
   WiFi.begin(ssid, password);
-  while(WiFi.status()!=WL_CONNECTED){ delay(500); Serial.print("."); }
-  Serial.println("WiFi connected");
+  while(WiFi.status() != WL_CONNECTED){ delay(500); Serial.print("."); }
+  Serial.println("\nWiFi connected");
 
   // Servo attach
   turretServo.attach(turretServoPin); turretServo.write(90);
